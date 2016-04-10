@@ -1,0 +1,9 @@
+#!/bin/bash
+
+docker run --rm -ti --entrypoint /concourse-web.sh \
+    ${CONCOURSE_URL:+--env CONCOURSE_URL="${CONCOURSE_URL}"} \
+    ${CONCOURSE_LOGIN:+--env CONCOURSE_LOGIN="${CONCOURSE_LOGIN}"} \
+    ${CONCOURSE_PASSWORD:+--env CONCOURSE_PASSWORD="${CONCOURSE_PASSWORD}"} \
+    ${CONCOURSE_WORKER_PUBKEY:+--env CONCOURSE_WORKER_PUBKEY="${CONCOURSE_WORKER_PUBKEY}"} \
+    ${CONCOURSE_DATA_SOURCE:+--env CONCOURSE_DATA_SOURCE="${CONCOURSE_DATA_SOURCE}"} \
+    "$@" "meteogroup/concourse-ci"

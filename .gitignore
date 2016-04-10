@@ -1,0 +1,5 @@
+fly
+target
+!/vagrant/Vagrantfile
+!/vagrant/setup-worker.sh
+/vagrant
