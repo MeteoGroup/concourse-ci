@@ -26,6 +26,7 @@ Links
 - [Concourse home page](https://concourse.ci/introduction.html)
 - [Image on docker hub](https://hub.docker.com/r/meteogroup/concourse-ci/)
 - [Travis-CI build](https://travis-ci.org/MeteoGroup/concourse-ci)
+- [Source code repository](https://github.com/meteogroup/concourse-ci)
 
 
 Building
