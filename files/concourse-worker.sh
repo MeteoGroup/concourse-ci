@@ -14,9 +14,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+${CONTAINER_DELAY:+sleep "$CONTAINER_DELAY"}
 cd "$CONCOURSE"
 
-${CONTAINER_DELAY:+sleep "$CONTAINER_DELAY"}
+for arg in "$@"; do
+  case "$arg" in
+  --tsa-host=*) CONCOURSE_TSA_HOST="${arg#*=}" ;;
+  --tsa-port=*) CONCOURSE_TSA_PORT="${arg#*=}" ;;
+  --tsa-pubkey=*) CONCOURSE_TSA_PUBKEY="${arg#*=}" ;;
+  --worker-key=*) CONCOURSE_WORKER_KEY="${arg#*=}" ;;
+done
 
 if [ ! -f "$CONCOURSE/tsa_key.pub" ]; then
   if [ ${CONCOURSE_TSA_PUBKEY:+set} ]; then

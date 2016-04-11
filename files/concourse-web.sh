@@ -14,10 +14,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-pg_ctlcluster 9.5 main start
+${CONTAINER_DELAY:+sleep "$CONTAINER_DELAY"}
 cd "$CONCOURSE_WEB"
 
-${CONTAINER_DELAY:+sleep "$CONTAINER_DELAY"}
+for arg in "$@"; do
+  case "$arg" in
+  --login=*) CONCOURSE_LOGIN="${arg#*=}" ;;
+  --password=*) CONCOURSE_PASSWORD="${arg#*=}" ;;
+  --data-source=*) CONCOURSE_DATA_SOURCE="${arg#*=}" ;;
+  --worker-pubkey=*) CONCOURSE_WORKER_PUBKEY="${arg#*=}" ;;
+  --url=*) CONCOURSE_URL="${arg#*=}" ;;
+  esac
+done
+
+pg_ctlcluster 9.5 main start
 
 if [ ! -f "$CONCOURSE_WEB/tsa_key" ]; then
   if [ -f "$CONCOURSE_KEYS/tsa_key" ]; then
