@@ -200,6 +200,22 @@ reachable URL of _concourse web_. In that case username and password have to be
 repeated in the authority part of that URL, otherwise the script will not be
 able to download the `fly` binary.
 
+Connecting to custom host/port:
+```bash
+CONCOURSE_HOST=192.168.99.100 CONCOURSE_PORT=8080 test.sh
+```
+
+Using custom username/password:
+```bash
+CONCOURSE_LOGIN=ci-user CONCOURSE_PASSWORD=rumpelstiltskin test.sh
+```
+
+Connecting to concourse behind a proxy:
+```bash
+CONCOURSE_URL=https://ci-user:rumpelstiltskin@my-ci/concourse \
+  CONCOURSE_LOGIN=ci-user CONCOURSE_PASSWORD=rumpelstiltskin test.sh
+```
+
 
 License
 -------
