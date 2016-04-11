@@ -31,7 +31,9 @@ RUN pg_ctlcluster 9.5 main start \
  && su postgres -s /usr/bin/psql -c "CREATE DATABASE concourse WITH OWNER concourse;" \
  && pg_ctlcluster 9.5 main stop
 
-RUN mkdir -p "$CONCOURSE" "$CONCOURSE_WORK" "$CONCOURSE_KEYS" \
+RUN mkdir -p "$CONCOURSE" "$CONCOURSE_WORK" \
  && useradd -d "$CONCOURSE_WEB" -s /bin/false -m -U concourse-web
+
+VOLUME "$CONCOURSE_WORK"
 
 COPY files/ /

@@ -16,33 +16,38 @@
 
 cd "$CONCOURSE"
 
-if [ ${CONCOURSE_TSA_PUBKEY:+set} ]; then
-  echo 'Using public TSA key from environment.'
-  cat <<<"$CONCOURSE_TSA_PUBKEY" >"$CONCOURSE/tsa_key.pub"
-elif [ -f "$CONCOURSE_KEYS/tsa_key.pub" ]; then
-  echo 'Using public TSA key from `'"$CONCOURSE_KEYS/tsa_key.pub"'`.'
-  cp "$CONCOURSE_KEYS/tsa_key.pub" "$CONCOURSE/tsa_key.pub"
-else
-  echo 'Fetching public TSA key from host.'
-  ssh-keyscan -p "${CONCOURSE_TSA_PORT:-2222}" -- "${CONCOURSE_TSA_HOST:-0.0.0.0}" | awk '{print $2" "$3" tsa"}' >"$CONCOURSE/tsa_key.pub" || exit 1
+if [ ! -f "$CONCOURSE/tsa_key.pub" ]; then
+  if [ ${CONCOURSE_TSA_PUBKEY:+set} ]; then
+    echo 'Using public TSA key from environment.'
+    cat <<<"$CONCOURSE_TSA_PUBKEY" >"$CONCOURSE/tsa_key.pub"
+  elif [ -f "$CONCOURSE_KEYS/tsa_key.pub" ]; then
+    echo 'Using public TSA key from `'"$CONCOURSE_KEYS/tsa_key.pub"'`.'
+    cp "$CONCOURSE_KEYS/tsa_key.pub" "$CONCOURSE/tsa_key.pub"
+  else
+    echo 'Fetching public TSA key from host.'
+    ssh-keyscan -p "${CONCOURSE_TSA_PORT:-2222}" -- "${CONCOURSE_TSA_HOST:-0.0.0.0}" | awk '{print $2" "$3" tsa"}' >"$CONCOURSE/tsa_key.pub" || exit 1
+  fi
+  chown root:root "$CONCOURSE/tsa_key.pub"
+  chmod 0600 "$CONCOURSE/tsa_key.pub"
 fi
-chown root:root "$CONCOURSE/tsa_key.pub"
-chmod 0600 "$CONCOURSE/tsa_key.pub"
 
-if [ ${CONCOURSE_WORKER_KEY:+set} ]; then
-  echo 'Using private worker key from environment.'
-  cat <<<"$CONCOURSE_WORKER_KEY" >"$CONCOURSE/worker_key"
-elif [ -f "$CONCOURSE_KEYS/worker_key" ]; then
-  echo 'Using private worker key from `'"$CONCOURSE_KEYS/worker_key"'`.'
-  cp "$CONCOURSE_KEYS/worker_key" "$CONCOURSE/worker_key"
-else
-  echo 'Generating worker key pair.'
-  ssh-keygen -t ecdsa -b 521 -N '' -f "$CONCOURSE/worker_key"
-  echo "Public ssh key for worker: "
-  cat $CONCOURSE/worker_key.pub
+if [ ! -f "$CONCOURSE/worker_key" ]; then
+  if [ ${CONCOURSE_WORKER_KEY:+set} ]; then
+    echo 'Using private worker key from environment.'
+    cat <<<"$CONCOURSE_WORKER_KEY" >"$CONCOURSE/worker_key"
+  elif [ -f "$CONCOURSE_KEYS/worker_key" ]; then
+    echo 'Using private worker key from `'"$CONCOURSE_KEYS/worker_key"'`.'
+    cp "$CONCOURSE_KEYS/worker_key" "$CONCOURSE/worker_key"
+  else
+    echo 'Generating worker key pair.'
+    ssh-keygen -t ecdsa -b 521 -N '' -f "$CONCOURSE/worker_key"
+    echo "Public ssh key for worker: "
+    cat "$CONCOURSE/worker_key.pub"
+  fi
+  chmod 0600 "$CONCOURSE/worker_key"
+  chown root:root "$CONCOURSE/worker_key"
+  { ssh-keygen -y -f ~/.ssh/id_ecdsa "$CONCOURSE/worker_key" >> "$CONCOURSE_KEYS/authorized_worker_keys"; } 2>&- || true
 fi
-chmod 0600 "$CONCOURSE/worker_key"
-chown root:root "$CONCOURSE/worker_key"
 
 exec concourse worker --work-dir="$CONCOURSE_WORK" \
   --tsa-host="${CONCOURSE_TSA_HOST:-0.0.0.0}" --tsa-port "${CONCOURSE_TSA_PORT:-2222}" \

@@ -1,7 +1,6 @@
 #!/bin/bash
 
-docker run --rm -ti --privileged \
-    -v /var/lib/concourse/work --entrypoint /concourse-worker.sh \
+docker run --rm -ti --privileged --entrypoint /concourse-worker.sh \
     ${CONCOURSE_TSA_HOST:+--env CONCOURSE_TSA_HOST="${CONCOURSE_TSA_HOST}"} \
     ${CONCOURSE_TSA_PORT:+--env CONCOURSE_TSA_PORT="${CONCOURSE_TSA_PORT}"} \
     ${CONCOURSE_TSA_PUBKEY:+--env CONCOURSE_TSA_PUBKEY="${CONCOURSE_TSA_PUBKEY}"} \

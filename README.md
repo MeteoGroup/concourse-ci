@@ -32,26 +32,28 @@ By default all keys are generated. The public key for TSA is printed to
 `stdout` as well as the **private key** workers may use to register with TSA!
 
 It is possible to mount a directory containing required keys for TSA into
-`/var/lib/concourse/keys`. The following files are looked up:
+`/var/lib/concourse/keys`. The following files are looked up there:
 
-  - `/var/lib/concourse/keys/tsa_key` will be used as private TSA host key
-  - `/var/lib/concourse/keys/authorized_worker_keys` will be used to verify
-    workers
-  - `/var/lib/concourse/keys/worker_key.pub` will be used to verify workers if
-    `/var/lib/concourse/keys/authorized_worker_keys` does not exists.
-  - `/var/lib/concourse/keys/session_signing_key` will be used as private key
-    for session signing. _Concourse requires RSA keys for session signing._
+  - `tsa_key` will be used as private TSA host key
+  - `authorized_worker_keys` will be used to verify
+    workers. It will be reread each time a worker connects to the TSA.
 
 ```bash
 docker run --entrypoint concourse-web.sh \
-  -v /path/to/dir/containing/keys:/var/lib/concourse/keys:ro \
+  -v /path/to/dir/containing/keys:/var/lib/concourse/keys \
   meteogroup/concourse-ci
 ```
 
+To allow sharing `/var/lib/concourse/keys` between _concourse web_ and
+_concourse worker_, private keys may be accessible by root only. They are
+copied and made accessible to _concourse web_ which will be run as non-root
+user.
+
 A single public key can be passed in the `CONCOURSE_WORKER_PUBKEY` environment
-variable. In that case `/var/lib/concourse/keys/authorized_worker_keys` and
-`/var/lib/concourse/keys/worker_key.pub` are ignored and the key in
-`CONCOURSE_WORKER_PUBKEY` is used as sole key to verify workers.
+variable. If `/var/lib/concourse/keys` is writable by the container
+`authorized_worker_keys` will be created from that key and used instead.
+Otherwise the key in `CONCOURSE_WORKER_PUBKEY` is used as sole key to verify
+workers.
 
 If _concourse web_ is firewalled or run behind a proxy the external visible URL
 can be configured by setting the `CONCOURSE_URL` environment variable.
@@ -62,9 +64,8 @@ docker run --entrypoint concourse-web.sh \
   meteogroup/concourse-ci
 ```
 
-By default the login `concourse` with password `ci` is used as credentials to
-access _concourse web_. This can be changed by setting the `CONCOURSE_LOGIN`
-and `CONCOURSE_PASSWORD` environment variables.
+The default login is `concourse` with password `ci` . This can be changed by
+setting the `CONCOURSE_LOGIN` and `CONCOURSE_PASSWORD` environment variables.
 
 ```bash
 docker run --entrypoint concourse-web.sh \
@@ -73,7 +74,8 @@ docker run --entrypoint concourse-web.sh \
   meteogroup/concourse-ci
 ```
 
-An connection to a external postgres database can be configured by setting the
+The image comes with an internal postgres database (which will be lost when the
+container is removed). To use an external postgres database set the
 `CONCOURSE_DATA_SOURCE` environment variable.
 
 ```bash
@@ -88,8 +90,7 @@ docker run --entrypoint concourse-web.sh \
 To run a worker use
 
 ```bash
-docker run --entrypoint concourse-worker.sh \
-  --privileged --v /var/lib/concourse/work \
+docker run --entrypoint concourse-worker.sh --privileged \
   meteogroup/concourse-ci
 ```
 
@@ -116,16 +117,21 @@ docker run --entrypoint concourse-worker.sh \
 ```
 
 It is possible to mount a directory containing required keys for the worker
-into `/var/lib/concourse/keys`. The following files are looked up:
+into `/var/lib/concourse/keys`. The following files are looked up there:
 
-  - `/var/lib/concourse/keys/tsa_key.pub` will be used as public TSA host key
-  - `/var/lib/concourse/keys/worker_key` will be used as the workers private
+  - `tsa_key.pub` will be used as public TSA host key
+  - `worker_key` will be used as the workers private
     host key.
+
+If `/var/lib/concourse/keys` is writable by the container the workers public
+key is appended `authorized_worker_keys` (which will be created if it not
+exists). After keys are setup `/var/lib/concourse/keys` will be unmounted from
+the container to protect private keys.
 
 ```bash
 docker run --entrypoint concourse-worker.sh \
   --privileged --v /var/lib/concourse/work \
-  -v /path/to/dir/containing/keys:/var/lib/concourse/keys:ro \
+  -v /path/to/dir/containing/keys:/var/lib/concourse/keys \
   meteogroup/concourse-ci
 ```
 

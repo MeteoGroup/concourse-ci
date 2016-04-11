@@ -17,47 +17,50 @@
 pg_ctlcluster 9.5 main start
 cd "$CONCOURSE_WEB"
 
-if [ -f "$CONCOURSE_KEYS/tsa_key" ]; then
-  echo '--- Using private TSA key from `'"$CONCOURSE_KEYS/tsa_key"'`.'
-  cp "$CONCOURSE_KEYS/tsa_key" "$CONCOURSE_WEB/tsa_key"
-else
-  echo '--- Generating TSA key pair.'
-  ssh-keygen -t ecdsa -b 521 -N '' -f "$CONCOURSE_WEB/tsa_key"
-  echo '--- Public TSA key:'
-  cat "$CONCOURSE_WEB/tsa_key.pub"
+if [ ! -f "$CONCOURSE_WEB/tsa_key" ]; then
+  if [ -f "$CONCOURSE_KEYS/tsa_key" ]; then
+    echo '--- Using private TSA key from `'"$CONCOURSE_KEYS/tsa_key"'`.'
+    cp "$CONCOURSE_KEYS/tsa_key" "$CONCOURSE_WEB/tsa_key"
+  else
+    echo '--- Generating TSA key pair.'
+    ssh-keygen -t ecdsa -b 521 -N '' -f "$CONCOURSE_WEB/tsa_key"
+    echo '--- Public TSA key:'
+    cat "$CONCOURSE_WEB/tsa_key.pub"
+    cp "$CONCOURSE_WEB/tsa_key.pub" "$CONCOURSE_KEYS/tsa_key.pub" 1>&- 2>&- || true
+  fi
+  chmod 0600 "$CONCOURSE_WEB/tsa_key"
+  chown concourse-web "$CONCOURSE_WEB/tsa_key"
 fi
-chmod 0600 "$CONCOURSE_WEB/tsa_key"
-chown concourse-web "$CONCOURSE_WEB/tsa_key"
 
-if [ -f "$CONCOURSE_KEYS/session_signing_key" ]; then
-  echo '--- Using session signing key from `'"$CONCOURSE_KEYS/session_signing_key"'`.'
-  cp "$CONCOURSE_KEYS/session_signing_key" "$CONCOURSE_WEB/session_signing_key"
-else
+if [ ! -f "$CONCOURSE_WEB/session_signing_key" ]; then
   echo '--- Generating session signing key pair.'
   ssh-keygen -t rsa -b 4096 -N '' -f "$CONCOURSE_WEB/session_signing_key"
+  chmod 0600 "$CONCOURSE_WEB/session_signing_key"
+  chown concourse-web "$CONCOURSE_WEB/session_signing_key"
 fi
-chmod 0600 "$CONCOURSE_WEB/session_signing_key"
-chown concourse-web "$CONCOURSE_WEB/session_signing_key"
 
-if [ ${CONCOURSE_WORKER_PUBKEY:+set} ]; then
-  echo '--- Using public worker key from environment.'
-  cat <<<"$CONCOURSE_WORKER_PUBKEY" >"$CONCOURSE_WEB/authorized_worker_keys"
-elif [ -f "$CONCOURSE_KEYS/authorized_worker_keys" ]; then
-  echo '--- Using authorized worker keys from `'"$CONCOURSE_KEYS/authorized_worker_keys"'`.'
-  cp "$CONCOURSE_KEYS/authorized_worker_keys" "$CONCOURSE_WEB/authorized_worker_keys"
-elif [ -f "$CONCOURSE_KEYS/worker_key.pub" ]; then
-  echo '--- Using authorized worker keys from `'"$CONCOURSE_KEYS/worker_key.pub"'`.'
-  cp "$CONCOURSE_KEYS/worker_key.pub" "$CONCOURSE_WEB/authorized_worker_keys"
-else
-  echo '--- Generating worker key pair.'
-  ssh-keygen -t ecdsa -b 521 -N '' -f "$CONCOURSE_WEB/worker_key"
-  echo "--- Private ssh key for worker: "
-  cat $CONCOURSE_WEB/worker_key
-  rm $CONCOURSE_WEB/worker_key
-  mv worker_key.pub "$CONCOURSE_WEB/authorized_worker_keys"
+if [ ! -f "$CONCOURSE_WEB/authorized_worker_keys" ]; then
+  if [ ${CONCOURSE_WORKER_PUBKEY:+set} ]; then
+    echo '--- Using public worker key from environment.'
+    cat <<<"$CONCOURSE_WORKER_PUBKEY" >"$CONCOURSE_WEB/authorized_worker_keys"
+    if mv "$CONCOURSE_WEB/authorized_worker_keys" "$CONCOURSE_KEYS/authorized_worker_keys" 1>&- 2>&-; then
+      ln -s "$CONCOURSE_KEYS/authorized_worker_keys" "$CONCOURSE_WEB/authorized_worker_keys"
+    fi
+  elif [ -f "$CONCOURSE_KEYS/authorized_worker_keys" ]; then
+    echo '--- Using authorized worker keys from `'"$CONCOURSE_KEYS/authorized_worker_keys"'`.'
+    ln -s "$CONCOURSE_KEYS/authorized_worker_keys" "$CONCOURSE_WEB/authorized_worker_keys"
+  else
+    echo '--- Generating worker key pair.'
+    ssh-keygen -t ecdsa -b 521 -N '' -f "$CONCOURSE_WEB/worker_key"
+    echo "--- Private ssh key for worker: "
+    mv "$CONCOURSE_WEB/worker_key" "$CONCOURSE_KEYS/worker_key" 1>&- 2>&- || cat "$CONCOURSE_WEB/worker_key"
+    if mv "$CONCOURSE_WEB/worker_key.pub" "$CONCOURSE_KEYS/authorized_worker_keys" 1>&- 2>&-; then
+      ln -s "$CONCOURSE_KEYS/authorized_worker_keys" "$CONCOURSE_WEB/authorized_worker_keys"
+    else
+      mv "$CONCOURSE_WEB/worker_key.pub" "$CONCOURSE_WEB/authorized_worker_keys"
+    fi
+  fi
 fi
-chmod 0600 "$CONCOURSE_WEB/authorized_worker_keys"
-chown concourse-web "$CONCOURSE_WEB/authorized_worker_keys"
 
 exec su concourse-web -s /usr/local/bin/concourse -- web \
     --basic-auth-username "${CONCOURSE_LOGIN:-concourse}" \
