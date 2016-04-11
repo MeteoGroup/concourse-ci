@@ -9,5 +9,12 @@ install:
 script:
   - docker build -t meteogroup/concourse-ci .
   - docker-compose up -d
-  - sleep 10
+  - sleep 15
   - ./test.sh --net container:concourseci_concourse-web_1
+
+after_success:
+  - docker-compose stop
+
+after_failure:
+  - docker-compose stop
+  - docker-compose logs

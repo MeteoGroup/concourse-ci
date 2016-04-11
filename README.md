@@ -1,4 +1,4 @@
-Concourse CI docker image
+Concourse CI docker image [![travis build](https://travis-ci.org/MeteoGroup/concourse-ci.svg)](https://travis-ci.org/MeteoGroup/concourse-ci)
 =========================
 
 A docker image for [concourse](https://concourse.ci/introduction.html) using
