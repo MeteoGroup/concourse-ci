@@ -150,6 +150,23 @@ docker run --entrypoint concourse-worker.sh \
 ```
 
 
+### Run single node _concourse web/worker_
+
+For your convenience there is a `docker-compose.yml` file to stand up a ready
+to use _concourse web/worker_ deployment, no key management involved. Just run
+
+```bash
+docker-compose up
+```
+
+If _concourse web_ is firewalled or run behind a proxy the external visible URL
+can be configured by setting the `CONCOURSE_URL` environment variable.
+
+```bash
+CONCOURSE_URL=http://192.168.99.100:8080 docker-compose up
+```
+
+
 Test
 ----
 
