@@ -215,11 +215,11 @@ environment variables for the `test.sh` script.
 
 **Be aware that username and password will be echoed in the script output!**
 
-If _concourse web_ running behind a proxy and not reachable at the hosts root
-path you have to set the `CONCOURSE_URL` environment variable to the externally
-reachable URL of _concourse web_. In that case username and password have to be
-repeated in the authority part of that URL, otherwise the script will not be
-able to download the `fly` binary.
+If _concourse web_ running behind a proxy and is not reachable at the hosts
+root path you have to set the `CONCOURSE_URL` environment variable to the
+externally reachable URL of _concourse web_. In that case username and password
+have to be repeated in the authority part of that URL, otherwise the
+test script will not be able to download the `fly` binary.
 
 Connecting to custom host/port:
 ```bash
@@ -246,9 +246,9 @@ Concourse – Copyright © 2014-2016 Alex Suraci & Chris Brown, licensed under
 
 Copyright © 2016 MeteoGroup Deutschland GmbH
 
-Licensed under the Apache License, Version 2.0 (the "License"); you may not
-file from this repository except in compliance with the License. You may obtain
-a copy of the License at
+Licensed under the Apache License, Version 2.0 (the "License"); you may not use
+any file from this repository except in compliance with the License. You may
+obtain a copy of the License at
 
   <http://www.apache.org/licenses/LICENSE-2.0>
 
