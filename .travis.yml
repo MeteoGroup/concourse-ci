@@ -1,0 +1,13 @@
+sudo: required
+
+services:
+  - docker
+
+install:
+  - docker pull ubuntu:16.04
+
+script
+  - docker build -t meteogroup/concourse-ci .
+  - docker-compose up -d
+  - sleep 10
+  - ./test.sh
