@@ -1,0 +1,20 @@
+concourse-web:
+  image: meteogroup/concourse-ci
+  entrypoint: /concourse-web.sh
+  environment:
+    CONCOURSE_URL:
+  volumes:
+  - /var/lib/concourse/keys
+  ports:
+  - 8080:8080
+  - 2222:2222
+
+concourse-worker:
+  image: meteogroup/concourse-ci
+  entrypoint: /concourse-worker.sh
+  privileged: true
+  environment:
+    CONTAINER_DELAY: 5 #seconds, wait for the TSA setup
+  volumes_from:
+  - concourse-web
+  net: container:concourse-web

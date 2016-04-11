@@ -17,6 +17,8 @@
 pg_ctlcluster 9.5 main start
 cd "$CONCOURSE_WEB"
 
+${CONTAINER_DELAY:+sleep "$CONTAINER_DELAY"}
+
 if [ ! -f "$CONCOURSE_WEB/tsa_key" ]; then
   if [ -f "$CONCOURSE_KEYS/tsa_key" ]; then
     echo '--- Using private TSA key from `'"$CONCOURSE_KEYS/tsa_key"'`.'

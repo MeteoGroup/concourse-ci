@@ -16,6 +16,8 @@
 
 cd "$CONCOURSE"
 
+${CONTAINER_DELAY:+sleep "$CONTAINER_DELAY"}
+
 if [ ! -f "$CONCOURSE/tsa_key.pub" ]; then
   if [ ${CONCOURSE_TSA_PUBKEY:+set} ]; then
     echo 'Using public TSA key from environment.'
