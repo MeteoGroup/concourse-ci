@@ -10,4 +10,4 @@ script:
   - docker build -t meteogroup/concourse-ci .
   - docker-compose up -d
   - sleep 10
-  - ./test.sh -net container:concourseci_concourse-web_1
+  - ./test.sh --net container:concourseci_concourse-web_1
