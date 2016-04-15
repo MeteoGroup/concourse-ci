@@ -23,6 +23,7 @@ for arg in "$@"; do
   --tsa-port=*) CONCOURSE_TSA_PORT="${arg#*=}" ;;
   --tsa-pubkey=*) CONCOURSE_TSA_PUBKEY="${arg#*=}" ;;
   --worker-key=*) CONCOURSE_WORKER_KEY="${arg#*=}" ;;
+  esac
 done
 
 if [ ! -f "$CONCOURSE/tsa_key.pub" ]; then
