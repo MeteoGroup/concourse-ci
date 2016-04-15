@@ -17,4 +17,4 @@ after_success:
 
 after_failure:
   - docker-compose stop
-  - docker-compose logs
+  - docker-compose ps -q | xargs -I{} docker logs {}
