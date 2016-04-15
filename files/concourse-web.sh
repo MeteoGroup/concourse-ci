@@ -64,8 +64,10 @@ if [ ! -f "$CONCOURSE_WEB/authorized_worker_keys" ]; then
   else
     echo '--- Generating worker key pair.'
     ssh-keygen -t ecdsa -b 521 -N '' -f "$CONCOURSE_WEB/worker_key"
-    echo "--- Private ssh key for worker: "
-    mv "$CONCOURSE_WEB/worker_key" "$CONCOURSE_KEYS/worker_key" 1>&- 2>&- || cat "$CONCOURSE_WEB/worker_key"
+    if ! mv "$CONCOURSE_WEB/worker_key" "$CONCOURSE_KEYS/worker_key" 1>&- 2>&-; then
+      echo "--- Private ssh key for worker: "
+      cat "$CONCOURSE_WEB/worker_key"
+    fi
     if mv "$CONCOURSE_WEB/worker_key.pub" "$CONCOURSE_KEYS/authorized_worker_keys" 1>&- 2>&-; then
       ln -s "$CONCOURSE_KEYS/authorized_worker_keys" "$CONCOURSE_WEB/authorized_worker_keys"
     else
