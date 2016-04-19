@@ -14,7 +14,7 @@ concourse-worker:
   entrypoint: /concourse-worker.sh
   privileged: true
   environment:
-    CONTAINER_DELAY: 3 #seconds, wait for the TSA setup
+    CONTAINER_DELAY: 5 #seconds, wait for the TSA setup
   volumes_from:
   - concourse-web
   net: container:concourse-web
