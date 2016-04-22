@@ -92,7 +92,7 @@ setting the `CONCOURSE_LOGIN` and `CONCOURSE_PASSWORD` environment variables.
 ```bash
 docker run --entrypoint concourse-web.sh \
   --env CONCOURSE_LOGIN=ci-user \
-  --env CONCOURSE_PASSWD=rumpelstiltskin \
+  --env CONCOURSE_PASSWORD=rumpelstiltskin \
   meteogroup/concourse-ci
 ```
 
