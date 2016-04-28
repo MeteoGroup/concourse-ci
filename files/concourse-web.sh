@@ -76,9 +76,29 @@ if [ ! -f "$CONCOURSE_WEB/authorized_worker_keys" ]; then
   fi
 fi
 
+auth_args=()
+if [ ! -z ${CONCOURSE_GITHUB_AUTH_CLIENT_ID:+x} ]; then
+  echo '--- Using GitHub authentication.'
+  auth_args+=(--github-auth-client-id "${CONCOURSE_GITHUB_AUTH_CLIENT_ID}")
+  auth_args+=(--github-auth-client-secret "${CONCOURSE_GITHUB_AUTH_CLIENT_SECRET}")
+
+  if [ ! -z ${CONCOURSE_GITHUB_AUTH_ORGANIZATION:+x} ]; then
+    auth_args+=(--github-auth-organization "${CONCOURSE_GITHUB_AUTH_ORGANIZATION}")
+  fi
+  if [ ! -z ${CONCOURSE_GITHUB_AUTH_TEAM:+x} ]; then
+    auth_args+=(--github-auth-team "${CONCOURSE_GITHUB_AUTH_TEAM}")
+  fi
+  if [ ! -z ${CONCOURSE_GITHUB_AUTH_USER:+x} ]; then
+    auth_args+=(--github-auth-user "${CONCOURSE_GITHUB_AUTH_USER}")
+  fi
+else
+  echo '--- Using HTTP basic authentication.'
+  auth_args+=(--basic-auth-username "${CONCOURSE_LOGIN:-concourse}")
+  auth_args+=(--basic-auth-password "${CONCOURSE_PASSWORD:-ci}")
+fi
+
 exec su concourse-web -s /usr/local/bin/concourse -- web \
-    --basic-auth-username "${CONCOURSE_LOGIN:-concourse}" \
-    --basic-auth-password "${CONCOURSE_PASSWORD:-ci}" \
+    "${auth_args[@]}" \
     --session-signing-key "$CONCOURSE_WEB/session_signing_key" \
     --tsa-host-key "$CONCOURSE_WEB/tsa_key" \
     --tsa-authorized-keys "$CONCOURSE_WEB/authorized_worker_keys" \
