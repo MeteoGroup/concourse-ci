@@ -97,6 +97,11 @@ else
   auth_args+=(--basic-auth-password "${CONCOURSE_PASSWORD:-ci}")
 fi
 
+if [ ! -z ${CONCOURSE_PUBLICLY_VIEWABLE:+x} ]; then
+  echo '--- Enabling public viewing of pipelines.'
+  auth_args+=(--publicly-viewable)
+fi
+
 exec su concourse-web -s /usr/local/bin/concourse -- web \
     "${auth_args[@]}" \
     --session-signing-key "$CONCOURSE_WEB/session_signing_key" \

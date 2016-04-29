@@ -106,6 +106,14 @@ docker run --entrypoint concourse-web.sh \
   meteogroup/concourse-ci
 ```
 
+If you want to expose a safe view of your pipelines to unauthenticated users, set the `CONCOURSE_PUBLICLY_VIEWABLE` environment variable. This is convenient for open source projects.
+
+```bash
+docker run --entrypoint concourse-web.sh \
+  --env CONCOURSE_PUBLICLY_VIEWABLE=true \
+  meteogroup/concourse-ci
+```
+
 The image comes with an internal postgres database (which will be lost when the
 container is removed). To use an external postgres database set the
 `CONCOURSE_DATA_SOURCE` environment variable.
