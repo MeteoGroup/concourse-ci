@@ -96,7 +96,12 @@ docker run --entrypoint concourse-web.sh \
   meteogroup/concourse-ci
 ```
 
-Alternatively, you can configure GitHub OAuth authenticaion by setting the `CONCOURSE_GITHUB_AUTH_CLIENT_ID` and `CONCOURSE_GITHUB_AUTH_CLIENT_SECRET` environment variables, along with one or more of the `CONCOURSE_GITHUB_AUTH_ORGANIZATION`, `CONCOURSE_GITHUB_AUTH_TEAM`, and `CONCOURSE_GITHUB_AUTH_USER` variables. Setting these variables will cause the container to ignore the `CONCOURSE_LOGIN` and `CONCOURSE_PASSWORD` variables.
+Alternatively, you can configure GitHub OAuth authenticaion by setting the
+`CONCOURSE_GITHUB_AUTH_CLIENT_ID` and `CONCOURSE_GITHUB_AUTH_CLIENT_SECRET`
+environment variables, along with one or more of the
+`CONCOURSE_GITHUB_AUTH_ORGANIZATION`, `CONCOURSE_GITHUB_AUTH_TEAM`, and
+`CONCOURSE_GITHUB_AUTH_USER` variables. Setting these variables will cause the
+container to ignore the `CONCOURSE_LOGIN` and `CONCOURSE_PASSWORD` variables.
 
 ```bash
 docker run --entrypoint concourse-web.sh \
@@ -106,7 +111,9 @@ docker run --entrypoint concourse-web.sh \
   meteogroup/concourse-ci
 ```
 
-If you want to expose a safe view of your pipelines to unauthenticated users, set the `CONCOURSE_PUBLICLY_VIEWABLE` environment variable. This is convenient for open source projects.
+If you want to expose a safe view of your pipelines to unauthenticated users,
+set the `CONCOURSE_PUBLICLY_VIEWABLE` environment variable. This is convenient
+for open source projects.
 
 ```bash
 docker run --entrypoint concourse-web.sh \
