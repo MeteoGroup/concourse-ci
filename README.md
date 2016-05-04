@@ -10,11 +10,11 @@ It provides entry points for _concourse web_ as well as for _concourse worker_.
 Table of content
 ----------------
 
-- **[Links](links)**
+- **[Links](#links)**
 - **[Building](#building)**
-- **[Running](#runnning)**
+- **[Running](#running)**
   + [Run _concourse web_](#run-concourse-web)
-  + [Run _concourse worker_](#run-concourse-worker)
+  + [Run a _concourse worker_](#run-a-concourse-worker)
   + [Run single node _concourse web/worker_](#run-single-node-concourse-webworker)
 - **[Test](#test)**
 - **[License](#license)**
