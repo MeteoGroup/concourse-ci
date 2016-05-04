@@ -214,6 +214,10 @@ can be configured by setting the `CONCOURSE_URL` environment variable.
 CONCOURSE_URL=http://192.168.99.100:8080 docker-compose up
 ```
 
+All authentication related options can be set as well using the respective
+environment variables (`CONCOURSE_GITHUB_AUTH_*`, `CONCOURSE_LOGIN`,
+`CONCOURSE_PASSWORD` and `CONCOURSE_PUBLICLY_VIEWABLE`). Please see [Run
+_concourse web_](#run-concourse-web) for further details.
 
 Test
 ----
@@ -242,7 +246,7 @@ environment variables for the `test.sh` script.
 
 **Be aware that username and password will be echoed in the script output!**
 
-If _concourse web_ running behind a proxy and is not reachable at the hosts
+If _concourse web_ is running behind a proxy and is not reachable at the hosts
 root path you have to set the `CONCOURSE_URL` environment variable to the
 externally reachable URL of _concourse web_. In that case username and password
 have to be repeated in the authority part of that URL, otherwise the
@@ -268,8 +272,8 @@ CONCOURSE_URL=https://ci-user:rumpelstiltskin@my-ci/concourse \
 Contributions
 -------------
 
-- [Joe Eli McIlvain](http://github.com/jemc) \<joe.eli.mac@gmail.com> added support for GitHub authentication
-  and public visible pipelines.
+- [Joe Eli McIlvain](http://github.com/jemc) \<joe.eli.mac@gmail.com> added
+  support for GitHub authentication and publicly visible pipelines.
 
 License
 -------
