@@ -17,6 +17,7 @@ Table of content
   + [Run a _concourse worker_](#run-a-concourse-worker)
   + [Run single node _concourse web/worker_](#run-single-node-concourse-webworker)
 - **[Test](#test)**
+- **[Contributions](#contributions)
 - **[License](#license)**
 
 
@@ -263,6 +264,12 @@ CONCOURSE_URL=https://ci-user:rumpelstiltskin@my-ci/concourse \
   CONCOURSE_LOGIN=ci-user CONCOURSE_PASSWORD=rumpelstiltskin test.sh
 ```
 
+
+Contributions
+-------------
+
+- [Joe Eli McIlvain](http://github.com/jemc) <joe.eli.mac@gmail.com> added support for GitHub authentication
+  and public visible pipelines.
 
 License
 -------
