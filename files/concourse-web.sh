@@ -21,6 +21,12 @@ for arg in "$@"; do
   case "$arg" in
   --login=*) CONCOURSE_LOGIN="${arg#*=}" ;;
   --password=*) CONCOURSE_PASSWORD="${arg#*=}" ;;
+  --github-auth-client-id=*) CONCOURSE_GITHUB_AUTH_CLIENT_ID="${arg#*=}" ;;
+  --github-auth-client-secret=*) CONCOURSE_GITHUB_AUTH_CLIENT_SECRET="${arg#*=}" ;;
+  --github-auth-organization=*) CONCOURSE_GITHUB_AUTH_ORGANIZATION="${arg#*=}" ;;
+  --github-auth-team=*) CONCOURSE_GITHUB_AUTH_TEAM="${arg#*=}" ;;
+  --github-auth-user=*) CONCOURSE_GITHUB_AUTH_USER="${arg#*=}" ;;
+  --publicly-viewable=*) CONCOURSE_PUBLICLY_VIEWABLE="${arg#*=}" ;;
   --data-source=*) CONCOURSE_DATA_SOURCE="${arg#*=}" ;;
   --worker-pubkey=*) CONCOURSE_WORKER_PUBKEY="${arg#*=}" ;;
   --url=*) CONCOURSE_URL="${arg#*=}" ;;
