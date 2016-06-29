@@ -132,6 +132,20 @@ docker run --entrypoint concourse-web.sh \
   meteogroup/concourse-ci
 ```
 
+The TSA private key may be passed in the `CONCOURSE_TSA_KEY` environment
+variable. In that case `/var/lib/concourse/keys/tsa_key` is ignored
+
+The session signing key may be passed in the `CONCOURSE_SESSION_SIGNING_KEY`
+environment variable. In that case `/var/lib/concourse/keys/session_signing_key`
+is ignored
+
+```bash
+docker run --entrypoint concourse-web.sh \
+  --env CONCOURSE_TSA_KEY="<private TSA key>" \
+  --env CONCOURSE_SESSION_SIGNING_KEY="<session signing key>" \
+  metegroup/concourse-ci
+```
+
 
 ### Run a _concourse worker_
 
