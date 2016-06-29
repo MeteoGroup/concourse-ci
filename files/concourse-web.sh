@@ -29,6 +29,8 @@ for arg in "$@"; do
   --publicly-viewable=*) CONCOURSE_PUBLICLY_VIEWABLE="${arg#*=}" ;;
   --data-source=*) CONCOURSE_DATA_SOURCE="${arg#*=}" ;;
   --worker-pubkey=*) CONCOURSE_WORKER_PUBKEY="${arg#*=}" ;;
+  --tsa-key=*) CONCOURSE_TSA_KEY="${arg#*=}" ;;
+  --session-signing-key=*) CONCOURSE_SESSION_SIGNING_KEY="${arg#*=}" ;;
   --url=*) CONCOURSE_URL="${arg#*=}" ;;
   esac
 done
@@ -36,7 +38,10 @@ done
 pg_ctlcluster 9.5 main start
 
 if [ ! -f "$CONCOURSE_WEB/tsa_key" ]; then
-  if [ -f "$CONCOURSE_KEYS/tsa_key" ]; then
+  if [ ${CONCOURSE_TSA_KEY:+set} ]; then
+    echo '--- Using private TSA key from environment.'
+    cat <<<"$CONCOURSE_TSA_KEY" >"$CONCOURSE_WEB/tsa_key"
+  elif [ -f "$CONCOURSE_KEYS/tsa_key" ]; then
     echo '--- Using private TSA key from `'"$CONCOURSE_KEYS/tsa_key"'`.'
     cp "$CONCOURSE_KEYS/tsa_key" "$CONCOURSE_WEB/tsa_key"
   else
@@ -51,8 +56,16 @@ if [ ! -f "$CONCOURSE_WEB/tsa_key" ]; then
 fi
 
 if [ ! -f "$CONCOURSE_WEB/session_signing_key" ]; then
-  echo '--- Generating session signing key pair.'
-  ssh-keygen -t rsa -b 4096 -N '' -f "$CONCOURSE_WEB/session_signing_key"
+  if [ ${CONCOURSE_SESSION_SIGNING_KEY:+set} ]; then
+    echo '--- Using session signing key from environment.'
+    cat <<<"$CONCOURSE_SESSION_SIGNING_KEY" >"$CONCOURSE_WEB/session_signing_key"
+  elif [ -f "$CONCOURSE_KEYS/session_signing_key" ]; then
+    echo '--- Using private session signing key from `'"$CONCOURSE_KEYS/session_signing_key"'`.'
+    cp "$CONCOURSE_KEYS/session_signing_key" "$CONCOURSE_WEB/session_signing_key"
+  else
+    echo '--- Generating session signing key pair.'
+    ssh-keygen -t rsa -b 4096 -N '' -f "$CONCOURSE_WEB/session_signing_key"
+  fi
   chmod 0600 "$CONCOURSE_WEB/session_signing_key"
   chown concourse-web "$CONCOURSE_WEB/session_signing_key"
 fi
