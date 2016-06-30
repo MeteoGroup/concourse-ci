@@ -33,7 +33,10 @@ for arg in "$@"; do
   esac
 done
 
-pg_ctlcluster 9.5 main start
+if [ -z ${CONCOURSE_DATA_SOURCE} ]; then
+  echo '--- Starting postgres'
+  pg_ctlcluster 9.5 main start
+fi
 
 if [ ! -f "$CONCOURSE_WEB/tsa_key" ]; then
   if [ -f "$CONCOURSE_KEYS/tsa_key" ]; then
