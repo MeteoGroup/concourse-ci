@@ -14,11 +14,13 @@
 
 FROM ubuntu:16.04
 
+ENV CONCOURSE_VERSION="1.4.0"
+
 RUN apt-get update -y \
  && apt-get upgrade -y \
  && apt-get install -y curl iptables iproute2 postgresql openssh-client \
  && apt-get clean -y
-RUN curl -L https://github.com/concourse/concourse/releases/download/v1.3.1/concourse_linux_amd64 -o /usr/local/bin/concourse \
+RUN curl -L https://github.com/concourse/concourse/releases/download/v${CONCOURSE_VERSION}/concourse_linux_amd64 -o /usr/local/bin/concourse \
  && chmod 755 /usr/local/bin/concourse
 
 RUN curl -L https://github.com/Yelp/dumb-init/releases/download/v1.0.2/dumb-init_1.0.2_amd64 -o /usr/local/bin/dumb-init \
