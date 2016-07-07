@@ -59,6 +59,6 @@ if [ ! -f "$CONCOURSE/worker_key" ]; then
   { ssh-keygen -y -f ~/.ssh/id_ecdsa "$CONCOURSE/worker_key" >> "$CONCOURSE_KEYS/authorized_worker_keys"; } 2>&- || true
 fi
 
-/usr/local/bin/dumb-init /usr/local/bin/concourse worker --work-dir="$CONCOURSE_WORK" \
+exec /usr/local/bin/dumb-init /usr/local/bin/concourse worker --work-dir="$CONCOURSE_WORK" \
   --tsa-host="${CONCOURSE_TSA_HOST:-0.0.0.0}" --tsa-port "${CONCOURSE_TSA_PORT:-2222}" \
   --tsa-public-key="$CONCOURSE/tsa_key.pub" --tsa-worker-private-key="$CONCOURSE/worker_key"
