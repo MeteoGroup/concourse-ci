@@ -152,7 +152,7 @@ docker run --entrypoint /concourse-web.sh \
 To run a worker use
 
 ```bash
-docker run --entrypoint concourse-worker.sh --privileged \
+docker run --entrypoint /concourse-worker.sh --privileged \
   meteogroup/concourse-ci
 ```
 
@@ -171,7 +171,7 @@ The TSA host and port can be configured by setting the `CONCOURSE_TSA_HOST` and
 register at `0.0.0.0:2222`.
 
 ```bash
-docker run --entrypoint concourse-worker.sh \
+docker run --entrypoint /concourse-worker.sh \
   --privileged --v /var/lib/concourse/work \
   --env CONCOURSE_TSA_HOST=192.168.99.100 \
   --env CONCOURSE_TSA_PORT=2222 \
@@ -191,7 +191,7 @@ exists). After keys are setup `/var/lib/concourse/keys` will be unmounted from
 the container to protect private keys.
 
 ```bash
-docker run --entrypoint concourse-worker.sh \
+docker run --entrypoint /concourse-worker.sh \
   --privileged --v /var/lib/concourse/work \
   -v /path/to/dir/containing/keys:/var/lib/concourse/keys \
   meteogroup/concourse-ci
@@ -204,7 +204,7 @@ The public TSA host key can be passed in the `CONCOURSE_TSA_PUBKEY` environment
 variable. In that case `/var/lib/concourse/keys/tsa_key.pub` is ignored.
 
 ```bash
-docker run --entrypoint concourse-worker.sh \
+docker run --entrypoint /concourse-worker.sh \
   --privileged --v /var/lib/concourse/work \
   --env CONCOURSE_WORKER_KEY="<worker's private key>" \
   --env CONCOURSE_TSA_PUBKEY="<public TSA key>" \
