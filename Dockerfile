@@ -14,7 +14,7 @@
 
 FROM ubuntu:16.04
 
-ENV CONCOURSE_VERSION="1.5.0"
+ENV CONCOURSE_VERSION="1.5.1"
 
 RUN apt-get update -y \
  && apt-get upgrade -y \
