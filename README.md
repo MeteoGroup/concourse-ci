@@ -1,3 +1,16 @@
+### Deprecation
+
+The fine folks at concourse finally got around to to maintain a
+[docker image](https://concourse.ci/docker-repository.html) on their own. And
+it seems they've taken into account a few learnings from here. :)
+
+This makes this repository obsolete, please migrate to the official image.
+To ease transition this repository will follow upstream releases a bit further
+before ending maintenance.
+
+It was fun, thanks everyone.
+
+
 Concourse CI docker image [![travis build](https://travis-ci.org/MeteoGroup/concourse-ci.svg)](https://travis-ci.org/MeteoGroup/concourse-ci)
 =========================
 
@@ -286,8 +299,15 @@ CONCOURSE_URL=https://ci-user:rumpelstiltskin@my-ci/concourse \
 Contributions
 -------------
 
-- [Joe Eli McIlvain](http://github.com/jemc) \<joe.eli.mac@gmail.com> added
+- [Joe Eli McIlvain](http://github.com/jemc) \<joe.eli.mac@gmail.com>:
   support for GitHub authentication and publicly visible pipelines.
+- [Sergio Ballesteros](http://github.com/ese):
+  support for dumb-init, ssh keys from environment
+- [Kurt McAlpine](https://github.com/kurtmc) \<kurt@linux.com>:
+  documentation fixes
+- [Takeshi Morikawa](https://github.com/morikat):
+  documentation fixes
+  
 
 License
 -------
